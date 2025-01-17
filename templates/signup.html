@@ -1,0 +1,30 @@
+{%extends 'base.html'%}
+{%block head%}
+    <title>Sign up</title>
+{%endblock%}
+
+{%block body%}
+    <h1>Create an account</h1>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="login-block">
+        <form action="{{url_for('signup')}}" method="POST">
+            <label for="username-text">Username:</label>
+            <input type="text" name="username" id="username-text">
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password">
+            <label for="email">Email:</label>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="submit" value="Sign Up" id="btn">
+        </form>
+    </div>
+{%endblock%}

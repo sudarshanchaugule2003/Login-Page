@@ -1,0 +1,108 @@
+*{
+    margin: 0%;
+    padding: 0px;
+}
+body{
+    display: flex;
+    flex-direction: column;
+       justify-content: center;
+       align-items: center;
+}
+
+nav{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr 6fr;
+    background: rgb(158, 100, 100);
+    color:#223e58;
+    margin-top: 0%;
+    padding: 5px;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.links{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+}
+
+
+#gifs{
+    align-self:start;
+    width: 50px; /* Adjust width */
+    height: auto;
+    margin-left: 5px;
+    padding: 0%;
+    border-radius: 40px;
+}
+
+h1 {
+    text-align: center;
+    color:#000000;
+    margin-bottom: 50px;
+}
+
+.login-block {
+    align-self: center;
+    padding: 20px 30px;
+    border: solid black 2px;
+    border-radius: 10px;
+    width: 300px;
+}
+
+form {
+    color:black;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color:black;
+}
+
+input[type="text"], 
+input[type="password"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    font-size: 15px;
+    width: 90%;
+}
+
+#btn{
+    background-color: rgb(74, 74, 219);
+    color: white;
+    padding: 10px;
+    margin-top: 8px;
+    border: solid black 1px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor:pointer;
+    width: 100px;
+    align-self: center;
+}
+
+.login-btn{
+    align-self: center;
+}
+
+.sub-list{
+    display: flex;
+    flex-direction: column;
+}
+
+.fill-form{
+    border: solid black 2px;
+    border-radius: 10px;
+    padding: 25px;
+}
+hr {
+    display: block;
+    border: 1px solid #000000;
+    margin: 10px 0;
+}
+

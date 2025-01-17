@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    {%block head%}{%endblock%}
+</head>
+<body>
+    <nav>
+        <img src="{{ url_for('static', filename='Data/MySite.gif') }}" alt="gif show" id="gifs">
+        <div class="links">
+            <div class="tabs">
+                enter tabs
+            </div>
+            <div id="hamburger">
+                hamburger
+            </div>
+        </div>
+    </nav>
+    {%block body%}
+    {%endblock%}    
+</body>
+</html>
