@@ -1,0 +1,224 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Answers</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Review Submitted Answers</h1>
+
+        {% if answers %}
+            <form method="POST" action="">
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject Selected:</label>
+                    <input type="text" class="form-control" id="subject" name="subject" value="{{ answers[0].subject }}" readonly><br><br>
+                </div>
+
+                <div class="mb-3">
+                    <label for="answers" class="form-label">Answers:</label><br>
+                    {% for key, value in answers[0].answers.items() %}
+                        <div class="mb-2">
+                            <label class="form-label">{{ key }}:</label>
+                            <input type="text" class="form-control" name="answers[{{ key }}]" value="{{ value }}">
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="container mt-4">
+                    <button class="btn btn-primary" type="submit">Update and Submit</button>
+                </div>
+            </form>
+        {% else %}
+            <p>No answers available for review.</p>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
+
+-->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Answers</title>
+    
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Review Submitted Answers</h1>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-success">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if answers %}
+        
+            <form method="POST" action="{{ url_for('update_answers') }}">
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject Selected:</label>
+                    <input type="text" class="form-control" id="subject" name="subject" value="{{ answers[0].subject }}" readonly><br><br>
+                </div>
+
+                <div class="mb-3">
+                    <label for="answers" class="form-label">Answers:</label><br>
+                    {% for key, value in answers[0].answers.items() %}
+                        <div class="mb-2">
+                            <label class="form-label">{{ key }}:</label>
+                            <input type="text" class="form-control" name="answers[{{ key }}]" value="{{ value }}">
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="container mt-4">
+                    <button type="submit" class="btn btn-primary">Update and Submit</button>
+                </div>
+            </form>
+        {% else %}
+            <p>No answers available for review.</p>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Answers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Review Submitted Answers</h1>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-success">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if answers %}
+            <form method="POST" action="{{ url_for('update_answers') }}">
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject Selected:</label>
+                    <input type="text" class="form-control" id="subject" name="subject" value="{{ answers[0].subject }}" readonly><br><br>
+                </div>
+
+                <div class="mb-3">
+                    <label for="answers" class="form-label">Answers:</label><br>
+                    {% for key, value in answers[0].answers.items() %}
+                        <div class="mb-2">
+                            <label class="form-label">{{ key }}:</label>
+                            <input type="text" class="form-control" name="answers[{{ key }}]" value="{{ value }}">
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="container mt-4">
+                    <button type="submit" class="btn btn-primary">Update and Submit</button>
+                </div>
+            </form>
+
+            <!-- Button to generate and download the DOCX file -->
+            <div class="container mt-4">
+                <form method="POST" action="{{ url_for('generate_docx') }}">
+                    <button type="submit" class="btn btn-success">Download as DOCX</button>
+                </form>
+            </div>
+
+        {% else %}
+            <p>No answers available for review.</p>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> -->
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Answers</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Review Submitted Answers</h1>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-success">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if answers %}
+            <!-- Form to update answers -->
+            <form method="POST" action="{{ url_for('update_answers') }}">
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject Selected:</label>
+                    <input type="text" class="form-control" id="subject" name="subject" value="{{ answers[0].subject }}" readonly><br><br>
+                </div>
+
+                <div class="mb-3">
+                    <label for="answers" class="form-label">Answers:</label><br>
+                    {% for key, value in answers[0].answers.items() %}
+                        <div class="mb-2">
+                            <label class="form-label">{{ key }}:</label>
+                            <input type="text" class="form-control" name="answers[{{ key }}]" value="{{ value }}">
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="container mt-4">
+                    <button type="submit" class="btn btn-primary">Update and Submit</button>
+                </div>
+            </form>
+
+            <!-- Button to generate and download the DOCX file -->
+            <div class="container mt-4">
+                <form method="POST" action="{{ url_for('generate_docx') }}">
+                    <button type="submit" class="btn btn-success">Download as DOCX</button>
+                </form>
+            </div>
+
+        {% else %}
+            <p>No answers available for review.</p>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

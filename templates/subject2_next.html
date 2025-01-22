@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Subject 2 Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="sub-form-select">
+        <h2 class="mb-4">Subject 2 Form</h2>
+        <form id="subject1-form" action="{{url_for('review')}}" method="POST">
+            <h3>Random Heading for Subject 2</h3>
+            
+            <p>Question 1:</p>
+            <label><input type="radio" name="q1" value="option1" required class="form-check-input"> Option 1</label><br>
+            <label><input type="radio" name="q1" value="option2" required class="form-check-input"> Option 2</label><br>
+            <label><input type="radio" name="q1" value="option3" required class="form-check-input"> Option 3</label><br>
+            <label><input type="radio" name="q1" value="option4" required class="form-check-input"> Option 4</label><br><br>
+
+            <p>Question 2:</p>
+            <label><input type="radio" name="q2" value="option1" required class="form-check-input"> Option 1</label><br>
+            <label><input type="radio" name="q2" value="option2" required class="form-check-input"> Option 2</label><br>
+            <label><input type="radio" name="q2" value="option3" required class="form-check-input"> Option 3</label><br>
+            <label><input type="radio" name="q2" value="option4" required class="form-check-input"> Option 4</label><br><br>
+
+            <button type="submit" id="submit-btn" class="btn btn-primary">Review</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
