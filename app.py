@@ -8,7 +8,9 @@ from docx import Document
 import io
 from flask_login import login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
 # app instance creation
 app = Flask(__name__)
 # Secret key for session management
@@ -368,23 +370,6 @@ def subject3_next():
 
     return redirect(url_for('review'))  # Redirect to Review page
 
-
-# @app.route('/review', methods=['GET', 'POST'])
-# @login_required
-# def review():
-#     if request.method == 'POST':
-#         # You could add functionality to update answers here, if needed.
-#         pass
-
-#     # Fetch all answers for the current logged-in user, grouped by subject
-#     answers = list(mongo.db.answers.find({"user_id": current_user.id}))
-
-#     if not answers:
-#         flash("No answers available for review.")
-
-#     return render_template('review.html', answers=answers)
-
-
 @app.route('/review', methods=['GET', 'POST'])
 @login_required
 def review():
@@ -409,108 +394,6 @@ def review():
 
     return render_template('review.html', grouped_answers=grouped_answers)
 
-
-
-# @app.route('/update_answers', methods=['POST'])
-# def update_answers():
-#     selected_sub = request.form.get("subject")
-#     updated_answers_dict = {}
-
-#     for key in request.form:
-#         if key.startswith("answers["):
-#             question = key[8:-1]
-#             updated_answers_dict[question] = request.form.get(key)
-
-#     mongo.db.answers.update_one(
-#         {"subject": selected_sub},
-#         {"$set": {"answers": updated_answers_dict}}
-#     )
-
-#     flash("Answers updated successfully!")
-#     return redirect(url_for('review'))
-
-# @app.route('/update_answers', methods=['POST'])
-# @login_required
-# def update_answers():
-#     # Extract subject
-#     selected_sub = request.form.get("subject")
-
-#     # Extract updated answers
-#     updated_answers_dict = {}
-#     for key in request.form:
-#         if key.startswith("answers["):
-#             question = key[8:-1]  # Extract the question name
-#             updated_answers_dict[question] = request.form.get(key)
-
-#     # Update the database
-#     if selected_sub:
-#         mongo.db.answers.update_one(
-#             {"user_id": current_user.id, "subject": selected_sub},
-#             {"$set": {"answers": updated_answers_dict}}
-#         )
-#         flash("Answers updated successfully!")
-
-#     # Redirect back to the review page
-#     return redirect(url_for('review'))
-
-# @app.route('/update_answers', methods=['POST'])
-# @login_required
-# def update_answers():
-#     form_data = request.form.to_dict(flat=False)  # Get all form data as a dictionary of lists
-
-#     # Loop through subjects and their corresponding answers
-#     for key, value in form_data.items():
-#         if key.startswith("subject["):  # Identify subject fields
-#             subject_index = key[8:-1]  # Extract subject index from field name
-#             subject_name = value[0]  # Subject name (e.g., subject-1)
-
-#             # Extract corresponding answers for this subject
-#             updated_answers = {
-#                 k.split("][", 1)[-1][:-1]: v[0]  # Extract question key and value
-#                 for k, v in form_data.items()
-#                 if k.startswith(f"answers[{subject_index}]")
-#             }
-
-#             # Update the database with the new answers
-#             mongo.db.answers.update_one(
-#                 {"user_id": current_user.id, "subject": subject_name},
-#                 {"$set": {"answers": updated_answers}}
-#             )
-
-#     flash("Answers updated successfully!")
-#     return redirect(url_for('review'))
-
-
-# @app.route('/update_answers', methods=['POST'])
-# @login_required
-# def update_answers():
-#     form_data = request.form.to_dict(flat=False)  # Get all form data as a dictionary of lists
-
-#     # Loop through subjects and their corresponding answers
-#     for key, value in form_data.items():
-#         if key.startswith("subject["):  # Identify subject fields
-#             subject_index = key[8:-1]  # Extract subject index from field name
-#             subject_name = value[0]  # Subject name (e.g., subject-1)
-
-#             # Extract corresponding answers for this subject
-#             updated_answers = {
-#                 k.split("][", 1)[-1][:-1]: v[0]  # Extract question key and value
-#                 for k, v in form_data.items()
-#                 if k.startswith(f"answers[{subject_index}]")
-#             }
-
-#             # Update the database with the new answers
-#             mongo.db.answers.update_one(
-#                 {"user_id": current_user.id, "subject": subject_name},
-#                 {"$set": {"answers": updated_answers}}
-#             )
-
-#             # Debug the updated data
-#             updated_data = mongo.db.answers.find_one({"user_id": current_user.id, "subject": subject_name})
-#             print(f"Updated Data for {subject_name}:", updated_data)
-
-#     flash("Answers updated successfully!")
-#     return redirect(url_for('review'))
 
 @app.route('/update_answers', methods=['POST'])
 @login_required
@@ -604,6 +487,55 @@ def forgot_password():
             return redirect(url_for('forgot_password'))
 
     return render_template("forgot_password.html")
+
+
+@app.route('/generate_pdf', methods=['GET'])
+@login_required
+def generate_pdf():
+    # Fetch answers for the current logged-in user
+    answers = list(mongo.db.answers.find({"user_id": current_user.id}))
+
+    # Create an in-memory PDF file
+    pdf_stream = BytesIO()
+    c = canvas.Canvas(pdf_stream, pagesize=letter)
+
+    c.setFont("Helvetica", 12)
+    y_position = 750  # starting Y position on the PDF
+
+    c.drawString(100, y_position, 'Your Copy of Submitted Answers')
+    y_position -= 30
+
+    if answers:
+        # Iterate through each answer set and write to the PDF
+        for answer_set in answers:
+            subject = answer_set.get("subject", "Unknown Subject")
+            c.drawString(100, y_position, f"Subject: {subject}")
+            y_position -= 20
+
+            for question, answer in answer_set.get("answers", {}).items():
+                c.drawString(100, y_position, f"{question}: {answer}")
+                y_position -= 20
+
+            # Add space between subjects
+            y_position -= 10
+    else:
+        c.drawString(100, y_position, "No answers available for review.")
+        y_position -= 20
+
+    # Save the PDF to the in-memory stream
+    c.showPage()
+    c.save()
+
+    # Move back to the beginning of the BytesIO stream
+    pdf_stream.seek(0)
+
+    # Send the PDF to the user for download
+    return send_file(
+        pdf_stream,
+        as_attachment=True,
+        download_name="review_answers.pdf",
+        mimetype="application/pdf"
+    )
 
 # Reset password route
 @app.route("/reset-password", methods=["GET", "POST"])
