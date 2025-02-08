@@ -135,9 +135,7 @@ def subject():
         "Question 4": request.form.get("q4"),
     }
 
-    # Only save answers if subject and all required questions are answered
-    if selected_sub and any(answers.values()):  # At least one answer must be provided
-        # Check if an entry for this subject already exists for the user
+    if selected_sub: 
         existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
 
         if existing_submission:
@@ -155,8 +153,6 @@ def subject():
                 "subject": selected_sub,
             })
             flash("Answers submitted successfully!")
-    else:
-        flash("Invalid submission. Please select a subject and answer at least one question.")
 
     # Redirect to the appropriate form based on subject
     if selected_sub == "subject-1":
@@ -182,12 +178,6 @@ def subject1_form():
     }
     selected_sub = "subject-1"  # Static identifier for this form
 
-    # Validate form data
-    if not all(answers.values()):  # Ensure all questions have answers
-        flash("Please answer all questions before submitting.")
-        return redirect(url_for('display_sub_form', username=current_user.username))
-
-    # Check if the user already submitted answers for this subject
     existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
 
     if existing_submission:
@@ -218,11 +208,6 @@ def subject1_next():
     }
     selected_sub = "subject-1-next"
 
-    if not all(answers.values()):
-        flash("Please answer all questions before submitting.")
-        return redirect(url_for('subject1_next'))
-
-    # Check if the user already submitted answers
     existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
     if existing_submission:
         mongo.db.answers.update_one(
@@ -252,9 +237,9 @@ def subject2_form():
     }
     selected_sub = "subject-2"
 
-    if not all(answers.values()):
-        flash("Please answer all questions before submitting.")
-        return redirect(url_for('subject2_form'))
+    # if not all(answers.values()):
+    #     flash("Please answer all questions before submitting.")
+    #     return redirect(url_for('subject2_form'))
 
     existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
 
@@ -283,9 +268,9 @@ def subject2_next():
     }
     selected_sub = "subject-2-next"
 
-    if not all(answers.values()):
-        flash("Please answer all questions before submitting.")
-        return redirect(url_for('subject2_next'))
+    # if not all(answers.values()):
+    #     flash("Please answer all questions before submitting.")
+    #     return redirect(url_for('subject2_next'))
 
     # Check if the user already submitted answers
     existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
@@ -317,9 +302,9 @@ def subject3_form():
     }
     selected_sub = "subject-3"
 
-    if not all(answers.values()):
-        flash("Please answer all questions before submitting.")
-        return redirect(url_for('subject3_form'))
+    # if not all(answers.values()):
+    #     flash("Please answer all questions before submitting.")
+    #     return redirect(url_for('subject3_form'))
 
     existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
 
@@ -348,9 +333,9 @@ def subject3_next():
     }
     selected_sub = "subject-3-next"
 
-    if not all(answers.values()):
-        flash("Please answer all questions before submitting.")
-        return redirect(url_for('subject3_next'))
+    # if not all(answers.values()):
+    #     flash("Please answer all questions before submitting.")
+    #     return redirect(url_for('subject3_next'))
 
     # Check if the user already submitted answers
     existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
@@ -389,8 +374,6 @@ def review():
                 grouped_answers[base_subject] = []
             grouped_answers[base_subject].append(answer_set)
 
-    # Debugging: Log grouped_answers to see what data is being passed
-    print("Grouped Answers:", grouped_answers)
 
     return render_template('review.html', grouped_answers=grouped_answers)
 
@@ -467,13 +450,14 @@ def generate_docx():
 def forgot_password():
     if request.method == "POST":
         email = request.form.get("email")
-
         account = mongo.db.accounts.find_one({"email": email})
 
         if account:
             reset_link = url_for('reset_password', _external=True)
-            msg.body = f'Hi, {account["username"]}!\n\nClick on link to reset password: \n{reset_link}'
-
+            
+            # Create Message object
+            msg = Message("Password Reset Request", sender="your-email@example.com", recipients=[email])
+            msg.body = f'Hi, {account["username"]}!\n\nClick on the link to reset your password: \n{reset_link}'
 
             try:
                 mail.send(msg)
@@ -487,6 +471,7 @@ def forgot_password():
             return redirect(url_for('forgot_password'))
 
     return render_template("forgot_password.html")
+
 
 
 @app.route('/generate_pdf', methods=['GET'])
@@ -536,13 +521,17 @@ def generate_pdf():
         download_name="review_answers.pdf",
         mimetype="application/pdf"
     )
-
 # Reset password route
 @app.route("/reset-password", methods=["GET", "POST"])
 def reset_password():
     if request.method == "POST":
         new_password = request.form.get("new_password")
         username = request.form.get("username")
+
+        # Check if password field is empty
+        if not new_password:
+            flash("Password cannot be empty")
+            return redirect(url_for("reset_password"))
 
         hashed_password = generate_password_hash(new_password)
 
