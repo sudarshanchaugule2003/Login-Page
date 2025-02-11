@@ -1,141 +1,303 @@
-{%extends 'base.html'%}
-{%block head%}
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #74b9ff, #00cec9);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #ffffff;
-        }
-        .card {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
-            animation: fadeIn 1s ease-in-out;
-        }
-        h2 {
-            font-size: 24px;
-            color: #2d3436;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-label {
-            font-weight: bold;
-            color: #636e72;
-        }
-        input[type="text"],
-        input[type="password"] {
-            border: 2px solid #74b9ff;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 20px;
-            width: 100%;
-            font-size: 14px;
-            color: #2d3436;
-        }
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            outline: none;
-            border-color: #0984e3;
-            box-shadow: 0 0 5px rgba(0, 134, 235, 0.5);
-        }
-        button {
-            background: linear-gradient(135deg, #00cec9, #0984e3);
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            padding: 10px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        button:hover {
-            background: linear-gradient(135deg, #0984e3, #00cec9);
-        }
-        .text-center {
-            margin-top: 15px;
-        }
-        .text-center p {
-            font-size: 14px;
-            color: #636e72;
-        }
-        .text-center a {
-            color: #0984e3;
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-        .text-center a:hover {
-            color: #00cec9;
-        }
-        .icon {
-            font-size: 60px;
-            color: #0984e3;
-            margin-bottom: 15px;
-            text-align: center;
-            display: block;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
-{%endblock%}
-{%block body%}
-    <div class="card">
-        <span class="icon">📝</span>
-        <h2>Create Your Account</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up | MSETCL</title>
+  <meta name="description" content="Sign Up to Maharashtra State Electricity Transmission Company Limited (MSETCL) for secure access to services." />
 
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            <div class="mb-3">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% endwith %}
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  
+  <style>
+    :root {
+      --primary-color: #005d8d;
+      --secondary-color: #ffd100;
+      --text-color: #333;
+      --background-color: #f8f9fa;
+    }
 
-        <!-- Sign Up Form -->
-        <form action="{{ url_for('signup') }}" method="POST">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" id="username" name="username" placeholder="Choose a username" required>
-            
-            <label for="email" class="form-label">Email</label>
-            <input type="text" id="email" name="email" placeholder="Enter your email" required>
-            
-            <label for="password" class="form-label">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter a strong password" required>
-            
-            <button type="submit">Sign Up</button>
-        </form>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .login-container {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      max-width: 1000px;
+      width: 90%;
+      overflow: hidden;
+      display: flex;
+      margin: 20px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
 
-        <!-- Footer Links -->
-        <div class="text-center">
-            <p>Already have an account? <a href="{{ url_for('login') }}">Log in here</a></p>
-        </div>
+    .logo-section {
+      flex: 1;
+      background: var(--background-color);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid #eee;
+    }
+    
+    /* Updated Company Logo styling: rectangular, not circular */
+    .company-logo {
+      width: 180px;
+      max-height: 120px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .company-logo img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .company-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .tagline {
+      font-size: 16px;
+      color: var(--text-color);
+      text-align: center;
+    }
+
+    .form-section {
+      flex: 1;
+      padding: 40px;
+      background: #ffffff;
+    }
+
+    .form-section h2 {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 12px 20px;
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(0, 93, 141, 0.25);
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group-text {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .btn-signup {
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 10px;
+      border: none;
+      width: 100%;
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-signup:hover {
+      background: #004970;
+      transform: translateY(-2px);
+    }
+
+    .language-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+      padding: 8px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .language-toggle:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .login-links {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .login-links a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .login-links a:hover {
+      text-decoration: underline;
+    }
+
+    .text-center {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        flex-direction: column;
+      }
+      .logo-section {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding: 20px;
+      }
+      .form-section {
+        padding: 20px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Toggle Button -->
+  <button class="language-toggle" onclick="toggleLanguage()">
+    <i class="bi bi-translate"></i> Change Language
+  </button>
+
+  <div class="login-container">
+    <!-- Left column: Logo and Tagline -->
+    <div class="logo-section">
+      <div class="company-logo">
+        <img src="{{ url_for('static', filename='photos/MSETCL.png') }}" alt="MSETCL Logo">
+      </div>
+      <div class="company-name" id="company-name">Maharashtra State Electricity Transmission Co. Ltd.</div>
+      <div class="tagline" id="tagline">Powering Maharashtra, Empowering Maharashtra</div>
     </div>
+    
+    <!-- Right column: Sign Up Form -->
+    <div class="form-section">
+      <h2 id="form-title">Create Your Account</h2>
+      
+      <form action="{{ url_for('signup') }}" method="post">
+        <!-- Username Input -->
+        <div class="mb-4">
+          <label for="username" class="form-label" id="username-label">Username</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required autofocus>
+        </div>
+        
+        <!-- Email Input -->
+        <div class="mb-4">
+          <label for="email" class="form-label" id="email-label">Email</label>
+          <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        
+        <!-- Password Input -->
+        <div class="mb-4">
+          <label for="password" class="form-label" id="password-label">Password</label>
+          <div class="input-group">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter a strong password" required>
+            <span class="input-group-text" id="toggle-password"><i class="bi bi-eye-fill"></i></span>
+          </div>
+          <small class="form-text text-muted" id="password-help">Password must be at least 8 characters long</small>
+        </div>
+        
+        <!-- Sign Up Button -->
+        <button type="submit" class="btn-signup" id="signup-button">Sign Up</button>
+      </form>
+      
+      <div class="login-links">
+        <a href="{{ url_for('login') }}" id="login-link">Already have an account? Login</a>
+      </div>
+      
+      <div class="text-center mt-4">
+        <small class="text-muted">Need help? Contact <a href="mailto:support@aiindia.in">support@aiindia.in</a></small>
+      </div>
+    </div>
+  </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-{%endblock%}
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Password Toggle Functionality
+    const togglePassword = document.getElementById('toggle-password');
+    const passwordField = document.getElementById('password');
+    togglePassword.addEventListener('click', function () {
+      const isPassword = passwordField.type === 'password';
+      passwordField.type = isPassword ? 'text' : 'password';
+      togglePassword.innerHTML = isPassword ? '<i class="bi bi-eye-slash-fill"></i>' : '<i class="bi bi-eye-fill"></i>';
+    });
+
+    // Language Toggle Function
+    function toggleLanguage() {
+      const langElements = {
+        'form-title': { 'en': 'Create Your Account', 'mr': 'आपले खाते तयार करा' },
+        'username-label': { 'en': 'Username', 'mr': 'वापरकर्ता नाव' },
+        'email-label': { 'en': 'Email', 'mr': 'ईमेल' },
+        'password-label': { 'en': 'Password', 'mr': 'पासवर्ड' },
+        'password-help': { 'en': 'Password must be at least 8 characters long', 'mr': 'पासवर्ड किमान 8 अक्षरे असणे आवश्यक आहे' },
+        'signup-button': { 'en': 'Sign Up', 'mr': 'खाते तयार करा' },
+        'login-link': { 'en': 'Already have an account? Login', 'mr': 'आधीच खाते आहे? लॉगिन करा' },
+        'company-name': { 'en': 'Maharashtra State Electricity Transmission Co. Ltd.', 'mr': 'महाराष्ट्र राज्य विद्युत पारेषण कंपनी लिमिटेड' },
+        'tagline': { 'en': 'Powering Maharashtra, Empowering Maharashtra', 'mr': 'महाराष्ट्राला विद्युत पुरवठा, महाराष्ट्राची उर्जा' }
+      };
+
+      const currentLang = document.body.classList.contains('mr') ? 'mr' : 'en';
+      
+      Object.keys(langElements).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = langElements[id][currentLang === 'en' ? 'mr' : 'en'];
+        }
+      });
+      
+      document.body.classList.toggle('mr');
+      
+      // Update language toggle button text
+      const langButton = document.querySelector('.language-toggle');
+      if (langButton) {
+        langButton.textContent = document.body.classList.contains('mr') ? 'Change Language (English)' : 'भाषा बदला (मराठी)';
+      }
+    }
+  </script>
+</body>
+</html>
