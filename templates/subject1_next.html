@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block head %}
     <title>Subject 1 Form</title>
     <!-- Bootstrap CSS -->
@@ -26,25 +27,94 @@
             color: #333;
             font-weight: bold;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         h3 {
             color: #555;
             margin-bottom: 20px;
+            font-weight: bold;
         }
 
-        .form-check-input {
-            margin-right: 10px;
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .dropdown button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown button:hover {
+            background-color: #0056b3;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 100%;
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content label {
+            display: block;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content label:hover {
+            background-color: #f1f1f1;
         }
 
         .btn-primary {
             background-color: #007bff;
             border-color: #007bff;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
             background-color: #0056b3;
-            border-color: #004085;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        /* Additional spacing and alignment for elements */
+        .dropdown label {
+            font-size: 16px;
+        }
+
+        .dropdown button {
+            font-size: 18px;
         }
     </style>
 {% endblock %}
@@ -52,20 +122,21 @@
 {% block body %}
     <div class="container mt-5">
         <h2 class="mb-4">Subject 1 Form</h2>
-        <form id="subject1-form" action="{{ url_for('subject1_next') }}" method="POST">
-            <h3>Random Heading for Subject 1</h3>
 
-            <p>Question 1:</p>
-            <label><input type="radio" name="q1" value="option1" class="form-check-input"  > Option 1</label><br>
-            <label><input type="radio" name="q1" value="option2" class="form-check-input"  > Option 2</label><br>
-            <label><input type="radio" name="q1" value="option3" class="form-check-input"  > Option 3</label><br>
-            <label><input type="radio" name="q1" value="option4" class="form-check-input"  > Option 4</label><br><br>
+        <h3>Choose the materials</h3>
 
-            <p>Question 2:</p>
-            <label><input type="radio" name="q2" value="option1" class="form-check-input"  > Option 1</label><br>
-            <label><input type="radio" name="q2" value="option2" class="form-check-input"  > Option 2</label><br>
-            <label><input type="radio" name="q2" value="option3" class="form-check-input"  > Option 3</label><br>
-            <label><input type="radio" name="q2" value="option4" class="form-check-input"  > Option 4</label><br><br>
+        <form action="{{ url_for('subject1_next') }}" method="POST">
+            <div class="dropdown">
+                <button type="button">Select Materials</button>
+                <div class="dropdown-content">
+                    <label><input type="checkbox" name="material" value="Wood"> Wood</label>
+                    <label><input type="checkbox" name="material" value="Metal"> Metal</label>
+                    <label><input type="checkbox" name="material" value="Plastic"> Plastic</label>
+                    <label><input type="checkbox" name="material" value="Glass"> Glass</label>
+                    <label><input type="checkbox" name="material" value="Fabric"> Fabric</label>
+                    <label><input type="checkbox" name="material" value="Stone"> Stone</label>
+                </div>
+            </div>
 
             <button type="submit" id="submit-btn" class="btn btn-primary">Review</button>
         </form>

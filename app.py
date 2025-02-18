@@ -1,6 +1,6 @@
 
 # Imports 
-from flask import Flask, render_template, request, redirect, url_for, flash, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_mail import Mail, Message
 from flask_pymongo import PyMongo
@@ -128,11 +128,9 @@ def display_sub_form(username):
 @login_required
 def subject():
     selected_sub = request.form.get("subject")
+    print({selected_sub})
     answers = {
         "Question 1": request.form.get("q1"),
-        "Question 2": request.form.get("q2"),
-        "Question 3": request.form.get("q3"),
-        "Question 4": request.form.get("q4"),
     }
 
     if selected_sub: 
@@ -155,9 +153,9 @@ def subject():
             flash("Answers submitted successfully!")
 
     # Redirect to the appropriate form based on subject
-    if selected_sub == "subject-1":
+    if selected_sub == "proquremnet":
         return render_template("subject1.html")
-    elif selected_sub == "subject-2":
+    elif selected_sub == "Services":
         return render_template("subject2.html")
     elif selected_sub == "subject-3":
         return render_template("subject3.html")
@@ -172,11 +170,8 @@ def subject1_form():
     # Fetch the submitted form data
     answers = {
         "Question 1": request.form.get("q1"),
-        "Question 2": request.form.get("q2"),
-        "Question 3": request.form.get("q3"),
-        "Question 4": request.form.get("q4"),
     }
-    selected_sub = "subject-1"  # Static identifier for this form
+    selected_sub = "Proqurement"  # Static identifier for this form
 
     existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
 
@@ -192,38 +187,89 @@ def subject1_form():
         mongo.db.answers.insert_one({
             "user_id": current_user.id,
             "subject": selected_sub,
-            "answers": answers,
+            # "answers": answers,
         })
         flash("Answers submitted successfully!")
 
     # Redirect to the next subject page
     return render_template('subject1_next.html')
 
-@app.route('/subject1_next', methods=['POST'])
-@login_required
+# @app.route('/subject1_next', methods=['POST'])
+# @login_required
+# def subject1_next():
+#     answers = {
+#         "Question 1": request.form.get("q1"),
+#         "Question 2": request.form.get("q2"),
+#     }
+#     selected_sub = "subject-1-next"
+
+#     existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
+#     if existing_submission:
+#         mongo.db.answers.update_one(
+#             {"user_id": current_user.id, "subject": selected_sub},
+#             {"$set": {"answers": answers}}
+#         )
+#         flash("Your answers have been updated successfully!")
+#     else:
+#         mongo.db.answers.insert_one({
+#             "user_id": current_user.id,
+#             "subject": selected_sub,
+#             "answers": answers,
+#         })
+#         flash("Answers submitted successfully!")
+
+#     return redirect(url_for('review'))  # Redirect to Subject 2 Next form
+
+# @app.route('/subject1_next', methods=['GET', 'POST'])
+# def subject1_next():
+#     if request.method == "POST":
+#         selected_materials = request.form.getlist("material")  # Get selected checkboxes
+#         return f"Selected Materials: {', '.join(selected_materials)}"
+#     return redirect(url_for('review'))  # Render the HTML file
+
+# @app.route('/subject1_next', methods=['GET', 'POST'])
+# def subject1_next():
+#     if request.method == "POST":
+#         selected_materials = request.form.getlist("material")
+        
+#         # Store selected materials in session
+#         if "selected_materials" not in session:
+#             session["selected_materials"] = []
+        
+#         session["selected_materials"].extend(selected_materials)  # Append new data
+
+#     return redirect(url_for('review'))  # Redirect to review page
+
+# @app.route('/subject1_next', methods=['GET', 'POST'])
+# @login_required
+# def subject1_next():
+#     if request.method == "POST":
+#         selected_materials = request.form.getlist("material")
+        
+#         # Update database with selected materials for the logged-in user
+#         mongo.db.users.update_one(
+#             {"_id": current_user.id},
+#             {"$set": {"selected_materials": selected_materials}},  # Replace old materials
+#             upsert=True  # Create the field if it doesn't exist
+#         )
+
+#     return redirect(url_for('review'))  # Redirect to review page
+
+@app.route('/subject1_next', methods=['GET', 'POST'])
 def subject1_next():
-    answers = {
-        "Question 1": request.form.get("q1"),
-        "Question 2": request.form.get("q2"),
-    }
-    selected_sub = "subject-1-next"
+    if request.method == "POST":
+        selected_materials = request.form.getlist("material")
 
-    existing_submission = mongo.db.answers.find_one({"user_id": current_user.id, "subject": selected_sub})
-    if existing_submission:
-        mongo.db.answers.update_one(
-            {"user_id": current_user.id, "subject": selected_sub},
-            {"$set": {"answers": answers}}
-        )
-        flash("Your answers have been updated successfully!")
-    else:
-        mongo.db.answers.insert_one({
-            "user_id": current_user.id,
-            "subject": selected_sub,
-            "answers": answers,
-        })
-        flash("Answers submitted successfully!")
+        if selected_materials:
+            mongo.db.users.update_one(
+                {"_id": current_user.id},
+                {"$set": {"selected_materials": selected_materials}},  # Store in DB
+                upsert=True
+            )
 
-    return redirect(url_for('review'))  # Redirect to Subject 2 Next form
+    return redirect(url_for('review'))  # Redirect to review page
+
+
 
 
 @app.route('/subject2_form', methods=['POST'])
@@ -355,37 +401,178 @@ def subject3_next():
 
     return redirect(url_for('review'))  # Redirect to Review page
 
-@app.route('/review', methods=['GET', 'POST'])
+# @app.route('/review', methods=['GET', 'POST'])
+# @login_required
+# def review():
+#     if request.method == 'POST':
+#         # Logic to update answers (if needed)
+#         pass
+
+#     # Fetch all answers for the current logged-in user
+#     answers = list(mongo.db.answers.find({"user_id": current_user.id}))
+
+#     # Group answers by their logical flow
+#     grouped_answers = {}
+#     for answer_set in answers:
+#         if "subject" in answer_set and answer_set["subject"]:
+#             base_subject = answer_set["subject"].split("-")[0]  # Get the base subject (e.g., "subject1")
+#             if base_subject not in grouped_answers:
+#                 grouped_answers[base_subject] = []
+#             grouped_answers[base_subject].append(answer_set)
+#     selected_materials = session.get("selected_materials", [])  # Retrieve stored data
+
+#     return render_template('review.html', grouped_answers=grouped_answers, selected_materials=selected_materials)
+
+# @app.route('/review', methods=['GET', 'POST'])
+# @login_required
+# def review():
+#     if request.method == 'POST':
+#         # Logic to update answers (if needed)
+#         pass
+
+#     # Fetch all answers for the current logged-in user
+#     answers = list(mongo.db.answers.find({"user_id": current_user.id}))
+
+#     # Group answers by their logical flow
+#     grouped_answers = {}
+#     for answer_set in answers:
+#         if "subject" in answer_set and answer_set["subject"]:
+#             base_subject = answer_set["subject"].split("-")[0]  # Get the base subject (e.g., "subject1")
+#             if base_subject not in grouped_answers:
+#                 grouped_answers[base_subject] = []
+#             grouped_answers[base_subject].append(answer_set)
+
+#     # Append selected materials to the review page if they exist in the session
+#     selected_materials = session.get("selected_materials", [])
+
+#     return render_template('review.html', 
+                        #    grouped_answers=grouped_answers,
+                        #    selected_materials=selected_materials)
+
+# @app.route('/review', methods=['GET', 'POST'])
+# @login_required
+# def review():
+#     answers = list(mongo.db.answers.find({"user_id": current_user.id}))
+    
+#     # Debugging output
+#     print("Fetched Answers:", answers)
+
+#     grouped_answers = {}
+#     for answer_set in answers:
+#         if "subject" in answer_set and answer_set["subject"]:
+#             base_subject = answer_set["subject"].split("-")[0]
+#             if base_subject not in grouped_answers:
+#                 grouped_answers[base_subject] = []
+#             grouped_answers[base_subject].append(answer_set)
+
+#     print("Grouped Answers:", grouped_answers)  # Debugging
+
+#     return render_template('review.html', grouped_answers=grouped_answers)
+
+
+# @app.route('/review', methods=['GET', 'POST'])
+# @login_required
+# def review():
+#     answers = list(mongo.db.answers.find({"user_id": current_user.id}))
+
+#     grouped_answers = {}
+#     for answer_set in answers:
+#         if "subject" in answer_set and answer_set["subject"]:
+#             base_subject = answer_set["subject"].split("-")[0]
+#             if base_subject not in grouped_answers:
+#                 grouped_answers[base_subject] = []
+#             grouped_answers[base_subject].append(answer_set)
+
+#     # Debug session data
+#     print("Session Data:", session)
+#     selected_materials = session.get("selected_materials", [])  
+#     print("Selected Materials:", selected_materials)
+
+#     return render_template('review.html', grouped_answers=grouped_answers, selected_materials=selected_materials)
+
+
+# @app.route('/review', methods=['GET', 'POST'])
+# @login_required
+# def review():
+#     if request.method == 'POST':
+#         # Logic to update answers (if needed)
+#         pass
+
+#     # Fetch all answers for the current user
+#     answers = list(mongo.db.answers.find({"user_id": current_user.id}))
+
+#     # Fetch selected materials from the database
+#     user_data = mongo.db.users.find_one({"_id": current_user.id})
+#     selected_materials = user_data.get("selected_materials", []) if user_data else []
+
+#     # Group answers
+#     grouped_answers = {}
+#     for answer_set in answers:
+#         if "subject" in answer_set and answer_set["subject"]:
+#             base_subject = answer_set["subject"].split("-")[0]
+#             if base_subject not in grouped_answers:
+#                 grouped_answers[base_subject] = []
+#             grouped_answers[base_subject].append(answer_set)
+
+#     return render_template('review.html', grouped_answers=grouped_answers, selected_materials=selected_materials)
+
+
+@app.route('/review')
 @login_required
 def review():
-    if request.method == 'POST':
-        # Logic to update answers (if needed)
-        pass
+    user_data = mongo.db.users.find_one({"_id": current_user.id})  # Fetch user data
+    selected_materials = user_data.get("selected_materials", [])  # Get materials
 
-    # Fetch all answers for the current logged-in user
-    answers = list(mongo.db.answers.find({"user_id": current_user.id}))
-
-    # Group answers by their logical flow
+    # Fetch stored answers
     grouped_answers = {}
-    for answer_set in answers:
-        if "subject" in answer_set and answer_set["subject"]:
-            base_subject = answer_set["subject"].split("-")[0]  # Get the base subject (e.g., "subject1")
-            if base_subject not in grouped_answers:
-                grouped_answers[base_subject] = []
-            grouped_answers[base_subject].append(answer_set)
+    answers = mongo.db.answers.find({"user_id": current_user.id})
+
+    for answer in answers:
+        subject = answer["subject"]
+        if subject not in grouped_answers:
+            grouped_answers[subject] = []
+        grouped_answers[subject].append(answer)
+
+    return render_template("review.html", selected_materials=selected_materials, grouped_answers=grouped_answers)
 
 
-    return render_template('review.html', grouped_answers=grouped_answers)
 
+# @app.route('/update_answers', methods=['POST'])
+# @login_required
+# def update_answers():
+#     # Parse the form data
+#     form_data = request.form.to_dict(flat=False)
+
+#     for key, value in form_data.items():
+#         # Process each subject
+#         if key.startswith("subject["):  
+#             subject_index = key[8:-1]  
+#             subject_name = value[0]  
+
+#             # Collect answers for this subject
+#             updated_answers = {
+#                 k.split("][", 1)[-1][:-1]: v[0]
+#                 for k, v in form_data.items()
+#                 if k.startswith(f"answers[{subject_index}]")
+#             }
+
+#             # Update the database for the current subject
+#             mongo.db.answers.update_one(
+#                 {"user_id": current_user.id, "subject": subject_name},
+#                 {"$set": {"answers": updated_answers}}
+#             )
+
+#     flash("Answers updated successfully!")
+#     return redirect(url_for('review'))
 
 @app.route('/update_answers', methods=['POST'])
 @login_required
 def update_answers():
-    # Parse the form data
+    # Parse form data
     form_data = request.form.to_dict(flat=False)
 
+    # Update answers for each subject
     for key, value in form_data.items():
-        # Process each subject
         if key.startswith("subject["):  
             subject_index = key[8:-1]  
             subject_name = value[0]  
@@ -403,8 +590,46 @@ def update_answers():
                 {"$set": {"answers": updated_answers}}
             )
 
-    flash("Answers updated successfully!")
+    # Update selected materials in the database
+    selected_materials = request.form.getlist("selected_materials")  # Get from form
+    mongo.db.users.update_one(
+        {"_id": current_user.id},
+        {"$set": {"selected_materials": selected_materials}}
+    )
+
+    flash("Answers and materials updated successfully!")
     return redirect(url_for('review'))
+
+
+# @app.route('/update_answers', methods=['POST'])
+# @login_required
+# def update_answers():
+#     form_data = request.form.to_dict(flat=False)
+
+#     # ✅ Update selected materials
+#     selected_materials = form_data.get("selected_materials", [])
+#     mongo.db.users.update_one(
+#         {"_id": current_user.id},
+#         {"$set": {"selected_materials": selected_materials}}
+#     )
+
+#     # ✅ Update answers
+#     for subject, answers_dict in form_data.items():
+#         if subject.startswith("answers["):
+#             subject_name = subject[8:-1]  # Extract subject name
+
+#             updated_answers = {
+#                 question: value[0] for question, value in answers_dict.items()
+#             }
+
+#             mongo.db.answers.update_one(
+#                 {"user_id": current_user.id, "subject": subject_name},
+#                 {"$set": {"answers": updated_answers}}
+#             )
+
+#     flash("Answers and materials updated successfully!")
+#     return redirect(url_for('review'))
+
 
 
 
@@ -548,6 +773,3 @@ def reset_password():
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True, port=5000)
-
-
-    
