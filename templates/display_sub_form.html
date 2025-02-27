@@ -1,5 +1,8 @@
-{% extends 'base.html' %}
-{% block head %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Page</title>
     <link
         rel="stylesheet"
@@ -17,8 +20,8 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                        url('https://source.unsplash.com/1600x900/?education,abstract') no-repeat center center/cover;
+            /* background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('https://source.unsplash.com/1600x900/?education,abstract') no-repeat center center/cover; */
             color: #fff;
             min-height: 100vh;
         }
@@ -83,22 +86,111 @@
             margin-top: 100px;
             align-items: center;
         }
-    </style>
-{% endblock %}
+        :root {
+      --govt-primary: #00204e;
+      --govt-secondary: #9f1d20;
+      --govt-accent: #d4af37;
+    }
 
-{% block body %}
-<form action="/submit" method="POST" class="container mt4">
-    <h2>Select subject of your choice</h2>
-    <div class="form-check">
-        <input type="radio" name="subject" id="subject1" value="proquremnet" class="form-check-input subs">
-        <label for="subject1" class="form-check-label">proquremnet</label>
-    </div>
+    body {
+      font-family: 'Times New Roman', serif;
+      background-color: #fff;
+      color: #333;
+      min-height: 100vh;
+      margin: 0;
+      padding-top: 120px;
+    }
+
+    .header {
+      background-color: var(--govt-primary);
+      padding: 10px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 3px solid var(--govt-accent);
+    }
+
+    .sub-header {
+      background-color: #fff;
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+    }
+
+    .logo {
+      max-height: 50px;
+      margin-right: 15px;
+    }
+
+    .govt-title {
+      color: #fff;
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .govt-subtitle {
+      color: var(--govt-accent);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .btn-danger {
+    position: absolute;
+    top: 15px;  /* Keep vertical positioning */
+    right: 40px; /* Increased from 20px to move it further right */
+    margin: 0;  /* Remove any default margins */
+    z-index: 1001; /* Ensure it stays on top of other elements */
+}
+
+.header {
+    background-color: var(--govt-primary);
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 3px solid var(--govt-accent);
+}
+
+/* Ensure the container doesn't overlap with the logout button */
+.container.d-flex {
+    position: relative;
+    padding-right: 20px; /* Increased from 60px to accommodate the wider right positioning */
+}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container d-flex align-items-center">
+          <img src="{{ url_for('static', filename='photos/MSETCL.png') }}" alt="MSRTCL Logo" class="logo">
+          <div>
+            <h1 class="govt-title">Maharashtra State Electricity Transmission Co. Ltd</h1>
+            <p class="govt-subtitle">Government of Maharashtra</p>
+          </div>
+        </div>
+      </header>
+      <a href="{{ url_for('logout') }}" class="btn btn-danger" id="log">Logout</a>
+      <form action="/submit" method="POST" class="container mt4">
+        <h2>Select tender of your choice</h2>
+        
+        <div class="form-group">
+            <label for="tenderSelect" class="form-label">Tender Type</label>
+            <select name="tender" id="tenderSelect" class="form-select">
+                <option value="Proqurement">Proqurement</option>
+                <option value="services">Services</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
     
-    <div class="form-check">
-        <input type="radio" name="subject" id="subject2" value="Services" class="form-check-input subs">
-        <label for="subject2" class="form-check-label">Services</label>
-    </div>
-    
-    <button type="submit" class="btn btn-primary mt-3">Submit</button>
-</form>
-{% endblock %}
+</body>
+</html>

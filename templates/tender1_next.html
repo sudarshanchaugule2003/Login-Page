@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tender 1 Form</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+  />
+
+  <style>
+    :root {
+      --govt-primary: #00204e;
+      --govt-accent: #d4af37;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Times New Roman', serif;
+      background-color: #fff;
+      color: #333;
+      min-height: 100vh;
+      padding-top: 120px; /* for fixed header if needed */
+    }
+
+    .header {
+      background-color: var(--govt-primary);
+      padding: 10px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 3px solid var(--govt-accent);
+    }
+    .header .container {
+      display: flex;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .logo {
+      max-height: 50px;
+      margin-right: 15px;
+    }
+    .govt-title {
+      color: #fff;
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: bold;
+    }
+    .govt-subtitle {
+      color: var(--govt-accent);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .main-container {
+      max-width: 800px;
+      background: #fefefe;
+      color: #333;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-top: 30px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    h2 {
+      color: #333;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    h3 {
+      color: #555;
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 20px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    /* Search input styling */
+    #searchInput {
+      margin-bottom: 15px;
+      max-width: 300px;
+    }
+
+    
+    .btn-danger {
+    position: absolute;
+    top: 15px;  /* Keep vertical positioning */
+    right: 40px; /* Increased from 20px to move it further right */
+    margin: 0;  /* Remove any default margins */
+    z-index: 1001; /* Ensure it stays on top of other elements */
+}
+
+.header {
+    background-color: var(--govt-primary);
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 3px solid var(--govt-accent);
+}
+
+/* Ensure the container doesn't overlap with the logout button */
+.container.d-flex {
+    position: relative;
+    padding-right: 20px; /* Increased from 60px to accommodate the wider right positioning */
+}
+
+/* Add these new styles */
+.quantity-error {
+    border: 2px solid red;
+}
+
+.quantity-input {
+    width: 80px;
+    padding: 4px;
+}
+
+/* Add this to your existing input[type="number"] if you want */
+input[type="number"] {
+    transition: border-color 0.3s ease;
+}
+
+/* Add this to your existing CSS */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* For Firefox */
+}
+
+/* Optional: Additional styling for consistency */
+.quantity-input {
+    width: 80px;
+    padding: 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+  </style>
+</head>
+
+<body>
+  <!-- Fixed Header (optional) -->
+  <header class="header">
+    <div class="container">
+      <img
+        src="{{ url_for('static', filename='photos/MSETCL.png') }}"
+        alt="MSRTCL Logo"
+        class="logo"
+      />
+      <div>
+        <h1 class="govt-title">
+          Maharashtra State Electricity Transmission Co. Ltd
+        </h1>
+        <p class="govt-subtitle">Government of Maharashtra</p>
+      </div>
+    </div>
+  </header>
+
+  <a href="{{ url_for('logout') }}" class="btn btn-danger" id="log">Logout</a>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <h2>Tender LA Form</h2>
+    <h3>Select items</h3>
+
+    <!-- Search Box -->
+    <div class="d-flex justify-content-center">
+      <input
+        type="text"
+        id="searchInput"
+        class="form-control"
+        placeholder="Search products..."
+        onkeyup="searchTable()"
+        style="max-width: 300px;"
+      />
+    </div>
+
+    <form action="{{ url_for('tender1_next') }}" method="POST">
+      <table id="productTable">
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Material</th>
+            <th>Product ID</th>
+            <th>Quantity Advertised (Nos.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 1: Wood -->
+          <tr>
+            <!-- The checkbox name is "product", value includes "Material-ProductID-Price" -->
+            <td>
+              <input type="checkbox" name="product" value="390 kV LA alongwith terminal connectors and discharge counter 390kV,
+              10kA, 10500mm Cr. (Porcelain Type)-500022057-10" />
+            </td>
+            <td>390 kV LA alongwith terminal connectors and discharge counter 390kV,
+              10kA, 10500mm Cr. (Porcelain Type)</td>
+            <td>500022057</td>
+            <!-- The quantity field name must match "quantity_WD123" so we can parse it in the route -->
+            <td>
+              <input type="number" name="quantity_500022057" value="0" min="0" />
+            </td>
+          </tr>
+
+          <!-- Row 2: Metal -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="390 kV LA alongwith terminal connectors and discharge counter 390kV,
+              10kA, 10500mm Cr. (Polymer Type)-500022056-20" />
+            </td>
+            <td>390 kV LA alongwith terminal connectors and discharge counter 390kV,
+              10kA, 10500mm Cr. (Polymer Type)</td>
+            <td>500022056</td>
+            <td>
+              <input type="number" name="quantity_500022056" value="0" min="0" />
+            </td>
+          </tr>
+
+          <!-- Row 3: Plastic -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="198 kV LA alongwith power connectors & discharge counter 220 kV, 6125mm Cr. (Porcelain type)-500000629-15" />
+            </td>
+            <td>198 kV LA alongwith power connectors & discharge counter 220 kV, 6125mm Cr. (Porcelain type)</td>
+            <td>500000629</td>
+            <td>
+              <input type="number" name="quantity_500000629" value="0" min="0" />
+            </td>
+          </tr>
+          
+          <!-- fourth elements -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="98 kV LA alongwith power connectors & discharge counter 220 kV, 6125mm Cr. Polymer type E-500022060-15" />
+            </td>
+            <td>98 kV LA alongwith power connectors & discharge counter 220 kV,
+6125mm Cr. Polymer type
+E</td>
+            <td>500022060</td>
+            <td>
+              <input type="number" name="quantity_500022060" value="0" min="0" />
+            </td>
+          </tr>
+
+          <!-- fifth  -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product"
+              value="132 kV(120kV) Lightning Arrestor (Polymer type) Alongwith power
+              connectors & discharge counter-500012068-15" />
+            </td>
+            <td>132 kV(120kV) Lightning Arrestor (Polymer type) Alongwith power
+              connectors & discharge counter</td>
+            <td>500012068</td>
+            <td>
+              <input type="number" name="quantity_500012068" value="0" min="0" />
+            </td>
+          </tr>
+
+          <!-- sixth row  -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="132 kV(120kV) Lightning Arrestor (Porcelain type) Alongwith power
+              connectors & discharge counter-500000628-15" />
+            </td>
+            <td>132 kV(120kV) Lightning Arrestor (Porcelain type) Alongwith power
+              connectors & discharge counter</td>
+            <td>500000628</td>
+            <td>
+              <input type="number" name="quantity_500000628" value="0" min="0" />
+            </td>
+          </tr>
+
+          <!-- seventh row  -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="100 kV Lightning Arrestor Alongwith power connectors & discharge counter-500000635-15" />
+            </td>
+            <td>100 kV Lightning Arrestor Alongwith power connectors & discharge counter</td>
+            <td>500000635</td>
+            <td>
+              <input type="number" name="quantity_500000635" value="0" min="0" />
+            </td>
+          </tr>
+
+          <!-- eighth row  -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="30 kV LA Porcelain type for 33 KV system-500000626-15" />
+            </td>
+            <td>30 kV LA Porcelain type for 33 KV system</td>
+            <td>500000626</td>
+            <td>
+              <input type="number" name="quantity_500000626" value="0" min="0" />
+            </td>
+          </tr>
+
+
+          <!-- ninth row  -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="30 kV LA Polymer Typefor 33 KV system-500020760-15" />
+            </td>
+            <td>30 kV LA Polymer Typefor 33 KV system</td>
+            <td>500020760</td>
+            <td>
+              <input type="number" name="quantity_500020760" value="0" min="0" />
+            </td>
+          </tr>
+
+          <!-- tenth row  -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="18 kV LA (Polymer type)for 22kv system-500000052-15" />
+            </td>
+            <td>18 kV LA (Polymer type)for 22kv system</td>
+            <td>500000052</td>
+            <td>
+              <input type="number" name="quantity_500000052" value="0" min="0" />
+            </td>
+          </tr>
+
+          <!-- eleventh row  -->
+          <tr>
+            <td>
+              <input type="checkbox" name="product" value="18 kV LA (Porcelain type)for 22kv system-500000052-15" />
+            </td>
+            <td>18 kV LA (Polymer type)for 22kv system</td>
+            <td>500000052</td>
+            <td>
+              <input type="number" name="quantity_500000052" value="0" min="0" />
+            </td>
+          </tr>
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+
+      <button type="submit" id="submit-btn" class="btn btn-primary">
+        Review
+      </button>
+    </form>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Simple Search Functionality -->
+  <!-- Replace your existing script tag with this -->
+<script>
+  function searchTable() {
+      const input = document.getElementById("searchInput");
+      const filter = input.value.toLowerCase();
+      const table = document.getElementById("productTable");
+      const trs = table.getElementsByTagName("tr");
+  
+      for (let i = 1; i < trs.length; i++) {
+          const rowText = trs[i].textContent.toLowerCase();
+          if (rowText.indexOf(filter) > -1) {
+              trs[i].style.display = "";
+          } else {
+              trs[i].style.display = "none";
+          }
+      }
+  }
+  
+  // Add form validation
+  document.getElementById('submit-btn').addEventListener('click', function(e) {
+      e.preventDefault(); // Prevent immediate form submission
+      
+      const form = this.form;
+      const checkboxes = form.querySelectorAll('input[name="product"]:checked');
+      let isValid = true;
+      let errorMessage = 'Please enter a quantity greater than 0 for selected items:\n';
+      
+      checkboxes.forEach(checkbox => {
+          const productId = checkbox.value.split('-')[1]; // Get product ID from value
+          const quantityInput = form.querySelector(`input[name="quantity_${productId}"]`);
+          const quantity = parseInt(quantityInput.value);
+          const material = checkbox.value.split('-')[0];
+          
+          if (quantity <= 0) {
+              isValid = false;
+              errorMessage += `- ${material}\n`;
+          }
+      });
+      
+      if (!checkboxes.length) {
+          alert('Please select at least one product before submitting.');
+      } else if (!isValid) {
+          alert(errorMessage);
+      } else {
+          form.submit(); // Submit the form if all validations pass
+      }
+  });
+  </script>
+</body>
+</html>

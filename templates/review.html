@@ -1,166 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Review Answers</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" />
+  <style>
+    :root {
+      --govt-primary: #00204e;
+      --govt-accent: #d4af37;
+    }
 
-{% extends 'base.html' %}
+    body {
+      font-family: 'Times New Roman', serif;
+      background-color: #fff;
+      color: #333;
+      margin: 0;
+      padding-top: 120px;
+      min-height: 100vh;
+    }
 
-{% block head %}
-    <title>Review Answers</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                        url('https://source.unsplash.com/1600x900/?education,technology') no-repeat center center/cover;
-            color: #fff;
-            min-height: 100vh;
-        }
+    .header {
+      background-color: var(--govt-primary);
+      padding: 10px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 3px solid var(--govt-accent);
+    }
+    .header .container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .logo {
+      max-height: 50px;
+      margin-right: 15px;
+    }
+    .govt-title {
+      color: #fff;
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: bold;
+    }
+    .govt-subtitle {
+      color: var(--govt-accent);
+      font-size: 0.9rem;
+      margin: 0;
+    }
 
-        .container {
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-top: 50px;
-        }
+    .btn-danger {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
 
-        h1 {
-            color: #333;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .container-content {
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-top: 30px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
+    .alert {
+      font-size: 1rem;
+    }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-
-        .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
-        }
-
-        .btn-success:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-        }
-        .btn-danger {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        .alert {
-            font-size: 1rem;
-        }
-
-        .form-label {
-            font-weight: bold;
-        }
-    </style>
-{% endblock %}
-
-{% block body %}
+    .form-label {
+      font-weight: bold;
+    }
+  </style>
+</head>
 <body>
-    {% if current_user.is_authenticated %}
-        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+  <header class="header">
+    <div class="container">
+      <img src="{{ url_for('static', filename='photos/MSETCL.png') }}" alt="MSRTCL Logo" class="logo" />
+      <div>
+        <h1 class="govt-title">Maharashtra State Electricity Transmission Co. Ltd</h1>
+        <p class="govt-subtitle">Government of Maharashtra</p>
+      </div>
+    </div>
+  </header>
+
+  {% if current_user.is_authenticated %}
+    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+  {% endif %}
+
+  <div class="container-content mt-4">
+    <h1 class="mb-4 text-center">Review Submitted Values</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-success">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Submissions Section -->
+
+    <!-- Submissions Section -->
+    {% if submissions %}
+    <h3 class="mt-3">Submission Details</h3>
+    <div class="mb-3">
+      <label class="form-label">RFX Number:</label>
+      <input type="text" class="form-control" name="submissions[rfx_number]" value="{{ submissions.rfx_number or '' }}" />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">E-Tender Number:</label>
+      <input type="text" class="form-control" name="submissions[etender_number]" value="{{ submissions.etender_number or '' }}" />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Tender Call Number:</label>
+      <input type="text" class="form-control" name="submissions[tendercall_number]" value="{{ submissions.tendercall_number or '' }}" />
+    </div>
     {% endif %}
-    <div class="container mt-5">
-        <h1 class="mb-4">Review Submitted Answers</h1>
 
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-success">
-                    {{ messages[0] }}
-                </div>
-            {% endif %}
-        {% endwith %}
+    <!-- {% if submissions %}
+    <h3 class="mt-3">Submission Details</h3>
+    <div class="mb-3">
+      <label class="form-label">RFX Number:</label>
+      <input type="text" class="form-control" name="submissions[rfx_number]" value="{{ submissions.rfx_number }}" />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">E-Tender Number:</label>
+      <input type="text" class="form-control" name="submissions[etender_number]" value="{{ submissions.etender_number }}" />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Tender Call Number:</label>
+      <input type="text" class="form-control" name="submissions[tendercall_number]" value="{{ submissions.tendercall_number }}" />
+    </div>
+    {% endif %} -->
 
-        <!-- Display newly selected materials -->
-        <!-- {% if selected_materials %}
-            <h3 class="mt-4">Newly Selected Materials:</h3>
-            <ul>
-                {% for material in selected_materials %}
-                    <li>{{ material }}</li>
+    <!-- Answers Section -->
+    {% if grouped_answers %}
+      <form method="POST" action="{{ url_for('review') }}">
+        {% for base_tender, answers_list in grouped_answers.items() %}
+          <h3 class="mt-3">{{ base_tender|capitalize }}</h3>
+          {% for answer_set in answers_list %}
+            <div class="mb-3">
+              <label for="tender" class="form-label">Tender:</label>
+              <input type="text" class="form-control" name="grouped_answers[{{ base_tender }}][tender]" value="{{ answer_set.tender }}" readonly />
+            </div>
+            <div class="mb-3">
+              <label for="Sub-tender" class="form-label">Sub-tender:</label>
+              {% if answer_set.answers %}
+                {% for question, answer in answer_set.answers.items() %}
+                  {% if question != "selected_materials" %}
+                    <div class="mb-2">
+                      <input type="text" class="form-control" name="grouped_answers[{{ base_tender }}][{{ question }}]" value="{{ answer }}" />
+                    </div>
+                  {% endif %}
                 {% endfor %}
-            </ul>
-        {% else %}
-            <p>No new materials selected yet.</p>
-        {% endif %} -->
+              {% else %}
+                <p style="color: red;">No answers provided.</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% endfor %}
 
         {% if selected_materials %}
-        <h3 class="mt-4">Newly Selected Materials:</h3>
-        {% for material in selected_materials %}
-            <div class="mb-2">
-                <input type="text" class="form-control" name="selected_materials[]" value="{{ material }}">
-            </div>
-        {% endfor %}
-        {% else %}
-            <p>No new materials selected yet.</p>
-        {% endif %}
-
-        <!-- Review previously stored answers -->
-        {% if grouped_answers %}
-            <form method="POST" action="{{ url_for('update_answers') }}">
-                {% for base_subject, answers_list in grouped_answers.items() %}
-                <h3>{{ base_subject|capitalize }}</h3>
-                {% for answer_set in answers_list %}
-                    <div class="mb-3">
-                        <label for="subject" class="form-label">Subject:</label>
-                        <input type="text" class="form-control" value="{{ answer_set.subject }}" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="answers" class="form-label">Answers:</label>
-                        {% if 'answers' in answer_set and answer_set.answers %}
-                            {% for question, answer in answer_set.answers.items() %}
-                                <div class="mb-2">
-                                    <label class="form-label">{{ question }}:</label>
-                                    <input type="text" class="form-control" value="{{ answer }}">
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p style="color: red;">No answers provided.</p>
-                        {% endif %}
-                    </div>
+          <h3 class="mt-4">Newly Selected Materials:</h3>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead class="table-dark">
+                <tr>
+                  <th>Material Name</th>
+                  <th>Product ID</th>
+                  <th>Quantity</th>
+                  <th>Delivery Schedule</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in selected_materials %}
+                <tr>
+                  <td><input type="text" name="selected_materials[material][]" value="{{ item.material }}" class="form-control" /></td>
+                  <td><input type="text" name="selected_materials[product_id][]" value="{{ item.product_id }}" class="form-control" /></td>
+                  <td><input type="text" name="selected_materials[qty_advertised][]" value="{{ item.qty_advertised }}" class="form-control" /></td>
+                  <td>
+                    CM:[    ]Nos. within 2 months <br>
+                    from date of LOA <br>
+                    CP: @ [   ] Nos. per <br>
+                    month thereafter
+                  </td>
+                </tr>
                 {% endfor %}
-            {% endfor %}
-
-
-                <div class="d-flex justify-content-between mt-4">
-                    <button type="submit" class="btn btn-primary">Update and Submit</button>
-                    <a href="{{ url_for('generate_docx') }}" class="btn btn-success">Download as DOCX</a>
-                    <a href="{{ url_for('generate_pdf') }}" class="btn btn-warning">Download as PDF</a>
-                </div>
-            </form>
+              </tbody>
+            </table>
+          </div>
         {% else %}
-            <p>No answers available for review.</p>
+          <p class="mt-4">No new materials selected yet.</p>
         {% endif %}
-    </div>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+        <div class="d-flex justify-content-between mt-4">
+          <button type="submit" class="btn btn-primary">Update and Submit</button>
+          <a href="{{ url_for('generate_docx') }}" class="btn btn-success">Download as DOCX</a>
+          <a href="{{ url_for('generate_pdf') }}" class="btn btn-warning">Download as PDF</a>
+        </div>
+      </form>
+    {% else %}
+      <p>No answers available for review.</p>
+    {% endif %}
+
+    <a href="{{ url_for('annexure_f_docx') }}" class="btn btn-primary mt-4">Download Annexure-F</a>
+    <a href="{{ url_for('annexure_g_docx') }}" class="btn btn-primary mt-4">Download Annexure-G</a>
+    <a href="{{ url_for('ANNEXURE_A') }}" class="btn btn-primary mt-4">
+      ANNEXURE-A
+    </a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-{% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</html>

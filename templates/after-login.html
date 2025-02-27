@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFX Submission</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" />
+    <style>
+        :root {
+            --govt-primary: #00204e;
+            --govt-accent: #d4af37;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            min-height: 100vh;
+            padding-top: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header {
+            background-color: var(--govt-primary);
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 3px solid var(--govt-accent);
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            max-height: 50px;
+            margin-right: 15px;
+        }
+
+        .govt-title {
+            color: #fff;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .govt-subtitle {
+            color: var(--govt-accent);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label, input {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Remove number input spinners */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield; /* For Firefox */
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header class="header">
+        <div class="container">
+            <img src="{{ url_for('static', filename='photos/MSETCL.png') }}" alt="MSRTCL Logo" class="logo" />
+            <div>
+                <h1 class="govt-title">Maharashtra State Electricity Transmission Co. Ltd</h1>
+                <p class="govt-subtitle">Government of Maharashtra</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Form -->
+    <form action="{{ url_for('after_login') }}" method="POST">
+        <h2>Enter the information</h2>
+        <label for="rfx">RFX Number:</label>
+        <input type="number" id="rfx" name="rfx" required>
+        
+        <label for="etender">E-Tender Number:</label>
+        <input type="number" id="etender" name="etender" required>
+        
+        <label for="tendercall">Tender Call Number:</label>
+        <input type="number" id="tendercall" name="tendercall" required>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
